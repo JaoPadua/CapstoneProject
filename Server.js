@@ -36,6 +36,13 @@ app.use((req, res, next)=>{
     next()
 })
 
+//api
+
+app.get("/", (req,res) =>{
+    res.send("WELCOME TO OSCA")
+}
+)
+
 //routes
 app.use(express.json())
 app.use('/api/usersRoute', usersRoute)
