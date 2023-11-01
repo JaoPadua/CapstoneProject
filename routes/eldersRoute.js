@@ -5,6 +5,7 @@ const {
     getElders,
     deleteElders,
     updateElders,
+    searchElders,
 } = require("../controllers/elderController")
 
 const requireAuth = require('../middleware/requireAuth')
@@ -22,6 +23,11 @@ router.post('/move-item/:uid', moveElder)
 
 //Get all users
 router.get('/', getElders)
+
+
+//search elder
+router.get('/search', searchElders)
+
 
 //Get single user
 

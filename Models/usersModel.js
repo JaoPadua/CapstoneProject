@@ -68,10 +68,6 @@ const usersSchema = new Schema({
         type:String,
         required:true
     },
-    Salary:{
-        type:Number,
-        required:true
-    },
     CellPhoneNumber:{
         type:Number,
         required:true
@@ -81,19 +77,10 @@ const usersSchema = new Schema({
         required:true
     },
 
-    PresentWork:{
-        type:String,
-        required:true
-    },
-
     ValidIdPresented:{
         type:String,
         required:true
     },
-    Email:{
-        type:String,
-    },
-    
 
 },{timestamps:true})
 

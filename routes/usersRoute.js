@@ -5,6 +5,7 @@ const {
     getUsers,
     deleteUsers,
     updateUsers,
+    searchUsers,
 } = require("../controllers/usersController")
 
 const requireAuth = require('../middleware/requireAuth')
@@ -22,6 +23,11 @@ router.use(requireAuth)
 
 //Get all users
 router.get('/', getUsers)
+
+//search users
+
+router.get('/search',searchUsers)
+
 
 //Get single user
 

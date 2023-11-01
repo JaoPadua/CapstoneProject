@@ -9,13 +9,43 @@ const getElders = async(req,res) =>{
     res.status(200).json(elders)
 }
 
+// search elders
+const searchElders = async (req, res) => {
+  const { q } = req.query;
+
+  const keys = ["SurName", "FirstName", "MiddleName", "Address", "BirthPlace", "Gender", "Barangay", "District","Zone"];
+
+  const search = (data) => {
+    return data.filter((item) =>
+    keys.some((key) => item[key].toLowerCase().includes(q))
+    );
+  };
+
+  try {
+    if (q) {
+      const elders = await elderModels.find().exec();
+      //console.log('Elder Records Found:', elders);
+      const searchResults = search(elders);
+      //console.log('Search Results:', searchResults);
+      res.json(searchResults.slice(0, 10));
+    } else {
+      const elders = await elderModels.find({}).sort({ createdAt: -1 });
+      res.json(elders);
+    }
+  } catch (error) {
+    console.error('Error in searchElder:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
+
 
 //get a single users
 const getElder = async (req,res)=>{
     const { uid } =req.params
 
     if(!mongoose.isValidObjectId(uid)){
-        return res.status(404).json({error:'No user was Found'})
+        return res.status(404).json({error:'No Elder was Found'})
     }
 
     const elders = await elderModels.findById(uid)
@@ -88,7 +118,7 @@ const deleteElders = async (req,res) =>{
         return res.status(404).json({error: 'No elder Found'})
     }
 
-    res.status(200).json(user)
+    res.status(200).json(elder)
 }
 
 //update a users
@@ -118,4 +148,5 @@ module.exports = {
     getElders,
     deleteElders,
     updateElders,
+    searchElders,
 }

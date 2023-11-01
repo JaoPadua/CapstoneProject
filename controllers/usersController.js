@@ -7,6 +7,35 @@ const getUsers = async(req,res) =>{
 
     res.status(200).json(users)
 }
+//search users informations
+const searchUsers = async (req, res) => {
+    const { q } = req.query;
+  
+    const keys = ["SurName", "FirstName", "MiddleName", "Address", "BirthPlace", "Gender", "Barangay", "District","Zone"];
+  
+    const search = (data) => {
+      return data.filter((item) =>
+        keys.some((key) => item[key].toLowerCase().includes((q)))
+      );
+    };
+  
+    try {
+      if (q) {
+        const users = await usersModel.find().exec();
+        const searchResults = search(users);
+        res.json(searchResults.slice(0, 10));
+      } else {
+        const users = await usersModel.find({}).sort({createdAt:-1})
+        res.json(users);
+      }
+    } catch (error) {
+      console.error('Error in searchUsers:', error);
+      res.status(500).json({ error: 'An error occurred' });
+    }
+  };
+  
+
+
 
 
 //get a single users
@@ -44,12 +73,10 @@ const createUser = async(req,res) =>{
         Zone,
         District,
         CivilStatus,
-        Salary,
         CellPhoneNumber,
         Pension,
-        PresentWork,
         ValidIdPresented,
-        Email} = req.body
+        } = req.body
 
 //adding users to database
 
@@ -72,12 +99,10 @@ const createUser = async(req,res) =>{
                 Zone,
                 District,
                 CivilStatus,
-                Salary,
                 CellPhoneNumber,
                 Pension,
-                PresentWork,
                 ValidIdPresented,
-                Email})
+                })
                 res.status(200).json(user)
         } catch(error){
             res.status(400).json({error:error.message })
@@ -129,4 +154,5 @@ module.exports = {
     getUsers,
     deleteUsers,
     updateUsers,
+    searchUsers,
 }
