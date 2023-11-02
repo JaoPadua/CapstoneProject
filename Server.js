@@ -1,12 +1,14 @@
 require('dotenv').config()
 
 const express = require('express');
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT;
 const usersRoute = require('./routes/usersRoute')
 const newsRoute = require('./routes/newsRoute')
 const adminRoute = require('./routes/adminRoute')
 const elderRoute = require('./routes/eldersRoute')
+const importElder = require('./routes/importRoute')
 const mongoose = require('mongoose')
 
 
@@ -49,6 +51,7 @@ app.use('/api/usersRoute', usersRoute)
 app.use('/api/newsRoute', newsRoute )
 app.use('/api/adminRoute', adminRoute )
 app.use('/api/elderRoute', elderRoute)
+app.use('/api/importRoute',importElder)
 
 
 //connecting to db
