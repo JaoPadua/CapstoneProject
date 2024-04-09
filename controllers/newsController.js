@@ -1,12 +1,37 @@
-
 const NewsModel = require('../Models/newsModel.js')
 const mongoose = require('mongoose')
+const multer = require('multer')
+const path = require('path')
 
 //get all news
 const getNews = async(req,res) =>{
     const news = await NewsModel.find({}).sort({createdAt:-1})
 
     res.status(200).json(news)
+}
+
+
+//get all news with paginations
+const getPaginatedNews = async (req,res) =>{
+  const page = parseInt(req.query.page)  || 1; // Default to page 1 if not specified
+  const pageSize = parseInt(req.query.pageSize) || 2; // Default to 10 items per page
+  const totalNews = await NewsModel.countDocuments();
+  const totalPages = Math.ceil(totalNews / pageSize);  
+
+  const news = await NewsModel
+  .find({})
+  .sort({ createdAt: -1 }) // Sorting by createdAt in descending order
+  .skip((page - 1) * pageSize)
+  .limit(pageSize); 
+
+  res.status(200).json({
+    error:false ,
+    totalNews,
+    news,
+    currentPage: page,    
+    totalPages,
+    pageSize,
+  });
 }
 
 
@@ -27,6 +52,7 @@ const getNew = async (req,res)=>{
     res.status(200).json(news)
 }
 
+
 //create a new News
 const createNews = async(req,res) =>{
     const {Title,Description,img,link} = req.body
@@ -42,6 +68,8 @@ const createNews = async(req,res) =>{
             res.status(400).json({error:error.message })
         }
 }
+
+
 
 
 //delete a News
@@ -88,4 +116,5 @@ module.exports = {
     getNews,
     deleteNews,
     updateNews,
+    getPaginatedNews
 }

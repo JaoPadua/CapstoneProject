@@ -1,11 +1,39 @@
 const xlsx = require('xlsx');
 const ImportedElder = require('../Models/importModels');
 const upload = require('../middleware/multer')
+const mongoose = require('mongoose')
 
 const getImportElders = async(req,res) =>{
-    const elders = await ImportedElder.find({}).sort({createdAt:-1})
+    //paginations
+  const page = parseInt(req.query.page)  || 1; // Default to page 1 if not specified
+  const pageSize = parseInt(req.query.pageSize) || 10; // Default to 10 items per page
+  const totalElders = await ImportedElder.countDocuments();
+  const totalPages = Math.ceil(totalElders / pageSize);  
 
-    res.status(200).json(elders)
+  //search query
+  const search = req.query.search || "";
+  const keys = ["LAST NAME", "FIRST NAME", "MIDDLE NAME","SUFFIX  ", "STREET NAME", "GENDER", "BRGY", "DISTRICT NO","ZONE", "STATUS"];
+  const searchQuery = keys.map(key => ({ [key]: { $regex: search, $options: "i" } }));
+
+  
+  const elders = await ImportedElder
+  .find({  $or:searchQuery  })
+  .sort({ createdAt: -1 }) // Sorting by createdAt in descending order
+  .skip((page - 1) * pageSize)
+  .limit(pageSize); 
+
+  // Apply slice to elders array to get the desired slice of data
+  const slicedElders = elders.slice(0, 10);
+
+
+    res.status(200).json({
+      error:false ,
+      totalElders,
+      elders,
+      currentPage: page,    
+      totalPages,
+      pageSize,
+    });
 }
 
 const searchImportElders = async (req, res) => {
@@ -21,13 +49,13 @@ const searchImportElders = async (req, res) => {
   
     try {
       if (q) {
-        const elders = await elderModels.find().exec();
+        const elders = await ImportedElder.find().exec();
         //console.log('Elder Records Found:', elders);
         const searchResults = search(elders);
         //console.log('Search Results:', searchResults);
         res.json(searchResults.slice(0, 10));
       } else {
-        const elders = await elderModels.find({}).sort({ createdAt: -1 });
+        const elders = await ImportedElder.find({}).sort({ createdAt: -1 });
         res.json(elders);
       }
     } catch (error) {
@@ -43,7 +71,7 @@ const getImportedElder = async (req,res)=>{
         return res.status(404).json({error:'No Elder was Found'})
     }
 
-    const elders = await elderModels.findById(uid)
+    const elders = await ImportedElder.findById(uid)
 
     if(!elders ) {
         return res.status(404).json({error: 'No user Found'})
@@ -60,7 +88,7 @@ const deleteImportElder = async (req,res) =>{
     if(!mongoose.Types.ObjectId.isValid(uid)){
         return res.status(404).json({error:'no elder to delete'})
     }
-    const elder = await elderModels.findOneAndDelete({_id:uid})
+    const elder = await ImportedElder.findOneAndDelete({_id:uid})
 
     if(!elder ) {
         return res.status(404).json({error: 'No elder Found'})
@@ -70,22 +98,21 @@ const deleteImportElder = async (req,res) =>{
 }
 
 //update a users
-
 const updateImportElder = async(req,res) =>{
     const {uid} = req.params
 
     if(!mongoose.Types.ObjectId.isValid(uid)){
-        return res.status(404).json({error:'no user to update'})
+        return res.status(404).json({error:'no elder to update'})
     }
 
-    const elder = await elderModels.findByIdAndUpdate({_id:uid}, {
+    const elder = await ImportedElder.findByIdAndUpdate({_id:uid}, {
         ...req.body
     })
 
     if(!elder){
         return res.status(404).json({error:'No elder to Update'})
     }
-    res.status(200).json(user)
+    res.status(200).json(elder)
 }
 
 
@@ -111,7 +138,7 @@ const uploadExcel = async (req, res) => {
       const data = xlsx.utils.sheet_to_json(worksheet);
       
       
-    console.log('Data extracted from Excel:', data)
+    //console.log('Data extracted from Excel:', data)
 
       const result = await ImportedElder.insertMany(data);
       res.status(200).json({ message: 'Data uploaded successfully', result });

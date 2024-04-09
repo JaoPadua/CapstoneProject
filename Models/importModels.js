@@ -41,7 +41,7 @@ const importDataSchema = new mongoose.Schema({
     type:String,
  },
  "MOBILE NO.":{
-    type:Number,
+    type:String,
  },
  "OSCA ID NO.":{
     type:String,

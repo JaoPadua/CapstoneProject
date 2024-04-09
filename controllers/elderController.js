@@ -4,9 +4,29 @@ const mongoose = require('mongoose')
 
 //get all users
 const getElders = async(req,res) =>{
-    const elders = await elderModels.find({}).sort({createdAt:-1})
+  const page = parseInt(req.query.page)  || 1; // Default to page 1 if not specified
+  const pageSize = parseInt(req.query.pageSize) || 10; // Default to 10 items per page
+  const totalElders = await elderModels.countDocuments();
+  const totalPages = Math.ceil(totalElders / pageSize);  
 
-    res.status(200).json(elders)
+  const search = req.query.search || "";
+  const keys = ["SurName", "FirstName", "MiddleName", "Address", "BirthPlace", "Gender", "Barangay", "District","Zone"];
+  const searchQuery = keys.map(key => ({ [key]: { $regex: search, $options: "i" } }));
+
+  const elders = await elderModels
+  .find({  $or:searchQuery.slice(0,10) })
+  .sort({ createdAt: -1 }) // Sorting by createdAt in descending order
+  .skip((page - 1) * pageSize)
+  .limit(pageSize); 
+
+    res.status(200).json({
+      error:false ,
+      totalElders,
+      elders,
+      currentPage: page,    
+      totalPages,
+      pageSize,
+    });
 }
 
 // search elders
@@ -75,17 +95,18 @@ const moveElder = async (req, res) => {
         FirstName: user.FirstName, // You can map user data to customer fields
         SurName: user.SurName,  // as needed for your use case.
         MiddleName: user.MiddleName,
+        Suffix: user.Suffix,
         Address: user.Address,
         YrsofResidenceInManila: user.YrsofResidenceInManila,
         BirthPlace: user.BirthPlace,
-        DateofBirth: user.DateofBirth,
+        DateOfBirth: user.DateOfBirth,
         Gender: user.Gender,
         Age: user.Age,
         Barangay: user.Barangay,
         Zone: user.Zone,
         District: user.District,
         CivilStatus: user.CivilStatus,
-        CellPhoneNumber: user.CellPhoneNumber,
+        MobilePhone: user.MobilePhone,
 
         // Add other customer-specific fields as necessary.
       });
@@ -140,7 +161,20 @@ const updateElders = async(req,res) =>{
     res.status(200).json(user)
 }
 
+//Export Elder via Barangay 
 
+const exportElder = async(req,res) =>{
+  const Barangay = req.params.Barangay;
+
+  try {
+    const elderExport = await elderModels.find({Barangay});
+    res.status(200).json(elderExport);
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Internal Server Error')
+  }
+
+}
 
 module.exports = {
     moveElder,
@@ -149,4 +183,5 @@ module.exports = {
     deleteElders,
     updateElders,
     searchElders,
+    exportElder,
 }

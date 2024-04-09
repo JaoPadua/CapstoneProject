@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 const Schema = mongoose.Schema
 
-const adminSchema = new Schema({
+
+const elderLoginSchema = new Schema({
     
     firstName:
     {
@@ -27,23 +28,18 @@ const adminSchema = new Schema({
         required: true,
 
     },
-    role:{
-        type:String,
-        required:true,
-    },
-
     
-
 
 },{timestamps:true})
 
+
 //static sign up method
 
-adminSchema.statics.signup = async function (firstName,lastName,email,password,role) {
+elderLoginSchema.statics.signup = async function (firstName,lastName,email,password) {
    
 
     //validator
-    if(!email || !password || !firstName ||!lastName || !role){
+    if(!email || !password || !firstName ||!lastName){
         throw Error("All fields must be filled")
     }
 
@@ -64,38 +60,35 @@ adminSchema.statics.signup = async function (firstName,lastName,email,password,r
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password , salt)
 
-    const admin = await this.create({firstName,lastName,email,role,password: hash})
-    return admin
+    const ElderUser = await this.create({firstName,lastName,email,password: hash})
+    return ElderUser
 }
 
+
 //static login method
-adminSchema.statics.login = async function(email,password){
+elderLoginSchema.statics.login = async function(email,password){
 
     if (!email || !password) {
         throw Error('All fields must be filled')
       }
       
       //const admin = await this.findOne({ email })
-      const admin = await this.findOne({ email })
-      console.log('Returned Admin:', admin);
-      if(!admin) {
-          throw Error('Email or Password is Invalid')
+      const ElderUser = await this.findOne({ email })
+      console.log('Returned ElderUser:', ElderUser);
+      if(!ElderUser) {
+          throw Error('Does not Exist')
       }
     
     //compare hashpassword to password
 
-    const match = await bcrypt.compare(password, admin.password)
+    const match = await bcrypt.compare(password, ElderUser.password)
 
     if(!match ){
           throw Error('Email or Password is Invalid')
     }
 
 
-     return admin ;
+     return ElderUser ;
 }
-const Admin = mongoose.model('Admin', adminSchema);
 
-module.exports = Admin;
-
-
-//module.exports = mongoose.model("Admin",adminSchema )
+module.exports = mongoose.model("ElderLogin",elderLoginSchema )

@@ -24,6 +24,9 @@ const verifiedElder = new Schema({
         type:String,
         required:true
     },
+    Suffix:{
+        type:String,
+    },
     Address:{
         type:String,
         required:true
@@ -36,8 +39,8 @@ const verifiedElder = new Schema({
         type:String,
         required:true
     },
-    DateofBirth:{
-        type:Date,
+    DateOfBirth:{
+        type:String,
         required:true
     },
     Gender:{
@@ -64,8 +67,8 @@ const verifiedElder = new Schema({
         type:String,
         required:true
     },
-    CellPhoneNumber:{
-        type:Number,
+    MobilePhone:{
+        type:String,
         required:true
     },
 

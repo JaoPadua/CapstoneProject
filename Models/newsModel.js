@@ -17,21 +17,17 @@ const newsSchema = new Schema({
         required: true,
     },
 
-    img:{
+    link:{
         type:String,
         required: true,
     },
-
-    link:{
+    img:{
         type:String,
         required: true,
     }
 
 },{timestamps:true})
 
-newsSchema.virtual('decodedImg').get(function () {
-    return `data:image/png;base64,${this.img}`;
-  });
 
 
 module.exports = mongoose.model('News',newsSchema)

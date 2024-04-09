@@ -9,7 +9,11 @@ const newsRoute = require('./routes/newsRoute')
 const adminRoute = require('./routes/adminRoute')
 const elderRoute = require('./routes/eldersRoute')
 const importElder = require('./routes/importRoute')
+const smsRoute = require('./routes/smsRoute')
+const portalRoute = require('./routes/elderLoginRoute')
+const actionLogsRoute = require('./routes/actionLogsRoute')
 const mongoose = require('mongoose')
+
 
 
 
@@ -23,8 +27,8 @@ app.use(express.json())
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-
-
+app.use(express.json({ limit: '50mb' }));
+app.use("/uploads",express.static("uploads"))
 
 //Corrs to unblock Access-Control-Allow-Origin
 const cors =require('cors')
@@ -47,12 +51,19 @@ app.get("/", (req,res) =>{
 
 //routes
 app.use(express.json())
+
+{/* Admin routes*/}
 app.use('/api/usersRoute', usersRoute)
 app.use('/api/newsRoute', newsRoute )
 app.use('/api/adminRoute', adminRoute )
 app.use('/api/elderRoute', elderRoute)
 app.use('/api/importRoute',importElder)
+app.use('/api/smsRoute', smsRoute)
+app.use('/api/getLogs',actionLogsRoute)
 
+
+{/*Portal Routes*/}
+app.use('/api/elderPortal',portalRoute)
 
 //connecting to db
 mongoose.connect(process.env.MONGO_URI)

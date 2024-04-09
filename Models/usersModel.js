@@ -24,20 +24,23 @@ const usersSchema = new Schema({
         type:String,
         required:true
     },
+    Suffix:{
+        type:String,
+    },
     Address:{
         type:String,
         required:true
     },
     YrsofResidenceInManila:{
-        type:Number,
+        type:String,
         required:true
     },
     BirthPlace:{
         type:String,
         required:true
     },
-    DateofBirth:{
-        type:Date,
+    DateOfBirth:{
+        type:String,
         required:true
     },
     Gender:{
@@ -68,12 +71,8 @@ const usersSchema = new Schema({
         type:String,
         required:true
     },
-    CellPhoneNumber:{
-        type:Number,
-        required:true
-    },
-    Pension:{
-        type:Number,
+    MobilePhone:{
+        type:String,
         required:true
     },
 
@@ -81,8 +80,14 @@ const usersSchema = new Schema({
         type:String,
         required:true
     },
+    ProofOfValidID:{
+        type: String,
+        required:true
+    }
 
 },{timestamps:true})
+
+
 
 module.exports = mongoose.model('EldersRegistrations',usersSchema)
 
