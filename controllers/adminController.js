@@ -5,7 +5,9 @@ const mongoose = require('mongoose')
 
 //token
 const createToken= (_id)=>{
- return jwt.sign({_id,role:Admin.role},process.env.SECRET, {expiresIn:'1d'})
+ return jwt.sign({_id,
+  firstName:Admin.firstName,lastName:Admin.lastName,role:Admin.role}
+  ,process.env.SECRET, {expiresIn:'1d'})
 
 }
 

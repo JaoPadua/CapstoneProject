@@ -77,7 +77,7 @@ adminSchema.statics.login = async function(email,password){
       
       //const admin = await this.findOne({ email })
       const admin = await this.findOne({ email })
-      console.log('Returned Admin:', admin);
+      //console.log('Returned Admin:', admin);
       if(!admin) {
           throw Error('Email or Password is Invalid')
       }

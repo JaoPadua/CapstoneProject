@@ -1,7 +1,8 @@
 const usersModel = require('../Models/usersModel.js')
 const mongoose = require('mongoose')
 const multer = require('multer')
-
+//const cloudinary = require("../utils/cloudinary");
+const cloudinary = require('cloudinary').v2;
 
 
 //get all users
@@ -89,14 +90,17 @@ const getUser = async (req,res)=>{
 }
 
 
+
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET
+});
+
+
 // Multer storage configuration
-
-
-
-
-
-
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
       cb(null, 'uploads/');  // Directory where files will be stored
@@ -110,24 +114,53 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-
-
-
-
-
 //create a new users
     const createUser = async(req,res) =>{
-        /*const {Date,
+
+      const {
+        TypeofApplication,
+        SurName,
+        FirstName,
+        MiddleName,
+        Suffix,
+        Address,
+        YrsofResidenceInManila,
+        BirthPlace,
+        DateOfBirth,
+        Gender,
+        Nationality,
+        Age,
+        Barangay,
+        Zone,
+        District,
+        CivilStatus,
+        MobilePhone,
+        ValidIdPresented,
+      } = req.body;
+
+      try {
+        if (!req.file) {
+            console.log('file',req.files)
+            return res.status(400).json({ error: 'No PDF uploaded' });
+        }
+
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: 'pdf_files',
+        });
+
+
+        const user = await usersModel.create({
             TypeofApplication,
-            SurName,
+            SurName ,
             FirstName,
-            MiddleName,
+            MiddleName ,
+            Suffix ,
             Address,
-            YrsofResidenceInManila,
+            YrsofResidenceInManila ,
             BirthPlace,
-            DateOfBirth,
+            DateOfBirth ,
             Gender,
-            Nationality,
+            Nationality ,
             Age,
             Barangay,
             Zone,
@@ -135,54 +168,16 @@ const upload = multer({ storage: storage });
             CivilStatus,
             MobilePhone,
             ValidIdPresented,
-            } = req.body*/
-            //const { ProofOfValidID } = req.file.filename
-            /*(if (!req.file || !req.file.filename) {
-                return res.status(400).json({ error: 'ProofOfValidID file is missing' });
+            ProofOfValidID:{
+              public_id: result.public_id,
+              url: result.secure_url
             }
-            // Now req.file.filename should contain the file name*/
-            //adding users to database
-        try{
-          if (!req.file) {
-            console.log('proofOFvalidID',req.file)
-            return res.status(400).json({ error: 'No PDF uploaded' });
-            
-          }
-           
-              const pdfFileName = req.file.filename
-
-               const user = await usersModel.create({
-                //Date,
-                TypeofApplication:req.body.TypeofApplication,
-                SurName:req.body.SurName,
-                FirstName:req.body.FirstName,
-                MiddleName:req.body.MiddleName,
-                Suffix:req.body.Suffix,
-                Address:req.body.Address,
-                YrsofResidenceInManila:req.body.YrsofResidenceInManila,
-                BirthPlace:req.body.BirthPlace,
-                DateOfBirth:req.body.DateOfBirth,
-                Gender:req.body.Gender,
-                Nationality:req.body.Nationality,
-                Age:req.body.Age,
-                Barangay:req.body.Barangay,
-                Zone:req.body.Zone,
-                District:req.body.District,
-                CivilStatus:req.body.CivilStatus,
-                MobilePhone:req.body.MobilePhone,
-                ValidIdPresented:req.body.ValidIdPresented,
-                ProofOfValidID:pdfFileName,
-                /*ProofOfValidID:{
-                    type:ProofOfValidID.buffer,
-                    contentType:ProofOfValidID.mimetype,
-                }*/
-                });
-                res.status(200).json(user)
-                
-        } catch(error){
-            res.status(400).json({error:error.message })
-        }
-}
+        });
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
 
 //delete a users
