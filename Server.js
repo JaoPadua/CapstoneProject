@@ -36,7 +36,7 @@ const cors =require('cors')
 const corsOptions ={
     origin:'*', 
     credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
+    optionSuccessStatus:200,
 }
 app.use(cors(corsOptions));
 
@@ -44,8 +44,10 @@ app.use(cors(corsOptions));
 
 //middleware
 app.use((req, res, next)=>{
-    console.log(req.path, req.method)
-    next()
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
 })
 
 //api
