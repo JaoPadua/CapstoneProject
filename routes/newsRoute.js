@@ -45,6 +45,6 @@ router.delete('/:uid',logDelete, deleteNews)
 
 //Update a News?
 
-router.put('/:uid',logUpdate,updateNews)
+router.patch('/:uid',logUpdate,updateNews)
 
 module.exports = router

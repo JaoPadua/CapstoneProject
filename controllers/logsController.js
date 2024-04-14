@@ -5,7 +5,7 @@ const Log = require('../Models/LogsModel');
 
 const getAllLogs = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // Current page number, default to 1 if not provided
-  const limit = parseInt(req.query.limit) || 20; // Number of logs per page, default to 10 if not provided
+  const limit = parseInt(req.query.limit) || 15; // Number of logs per page, default to 10 if not provided
 
   try {
     const count = await Log.countDocuments(); // Total number of logs

@@ -12,6 +12,7 @@ const importElder = require('./routes/importRoute')
 const smsRoute = require('./routes/smsRoute')
 const portalRoute = require('./routes/elderLoginRoute')
 const actionLogsRoute = require('./routes/actionLogsRoute')
+const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
 
 
@@ -60,6 +61,7 @@ app.use('/api/elderRoute', elderRoute)
 app.use('/api/importRoute',importElder)
 app.use('/api/smsRoute', smsRoute)
 app.use('/api/getLogs',actionLogsRoute)
+app.use ('/api/docsRoute' , docsRoute)
 
 
 {/*Portal Routes*/}

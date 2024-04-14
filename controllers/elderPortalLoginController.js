@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const elderModelsLogin = require('../Models/elderLoginModel')
+const elderLoginModel = require('../Models/elderLoginModel')
 
 //
 const createToken= (_id)=>{
@@ -24,7 +25,7 @@ const loginElder = async (req, res) => {
       const token = createToken(elder._id)
   
       res.status(200).json({firstName,lastName,email,token})
-  
+      console.log('elder',elder)
   
     } catch (error){
       res.status(400).json({error:error.message})

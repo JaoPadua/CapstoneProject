@@ -77,4 +77,42 @@ const sendDenySMS = async(req,res) =>{
 }
 
 
-module.exports = {sendAcceptSMS, sendDenySMS};
+const sendSmSText =async (req,res) =>{
+    const {uid, messageText } = req.params;
+    try {
+        const user = await usersModel.findById(uid)
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const phoneNumberWithoutCountryCode = user.MobilePhone; // Assuming the phone number is stored in the 'MobilePhone' field
+        const phoneNumberWithCountryCode = `+63${phoneNumberWithoutCountryCode}`;
+
+        //payload for SemaphoreAPI
+        const payload = {
+            apikey: smsAPiKey,
+            number: phoneNumberWithCountryCode,
+            message: messageText
+        };
+
+        const response = await fetch('https://api.semaphore.co/api/v4/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams(payload)
+        });
+          // Check if the request was successful
+          if (!response.ok) {
+            throw new Error('Failed to send SMS');
+        }
+        res.send('SMS sent successfully');
+        console.log('SMS DATA', response)
+    } catch (err) {
+        console.error('Error sending SMS:', err);
+        res.status(500).send('Failed to send SMS');
+    }
+}
+
+
+
+module.exports = {sendAcceptSMS, sendDenySMS,sendSmSText};

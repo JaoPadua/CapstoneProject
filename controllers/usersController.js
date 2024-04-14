@@ -1,8 +1,8 @@
 const usersModel = require('../Models/usersModel.js')
 const mongoose = require('mongoose')
 const multer = require('multer')
-//const cloudinary = require("../utils/cloudinary");
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("../utils/cloudinary");
+//const cloudinary = require('cloudinary').v2;
 
 
 //get all users
@@ -93,15 +93,16 @@ const getUser = async (req,res)=>{
 
 
 // Configure Cloudinary
-cloudinary.config({
+/*cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET
-});
+  api_secret: process.env.CLOUD_API_SECRET,
+  upload_preset: process.env.UPLOAD_PRESET_NAME
+});*/
 
 
 // Multer storage configuration
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
   destination: function (req, file, cb) {
       cb(null, 'uploads/');  // Directory where files will be stored
   },
@@ -111,73 +112,77 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });*/
 
 
 //create a new users
-    const createUser = async(req,res) =>{
-
-      const {
-        TypeofApplication,
-        SurName,
-        FirstName,
-        MiddleName,
-        Suffix,
-        Address,
-        YrsofResidenceInManila,
-        BirthPlace,
-        DateOfBirth,
-        Gender,
-        Nationality,
-        Age,
-        Barangay,
-        Zone,
-        District,
-        CivilStatus,
-        MobilePhone,
-        ValidIdPresented,
-      } = req.body;
-
-      try {
-        if (!req.file) {
-            console.log('file',req.files)
-            return res.status(400).json({ error: 'No PDF uploaded' });
-        }
-
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: 'pdf_files',
-        });
-
-
-        const user = await usersModel.create({
-            TypeofApplication,
-            SurName ,
-            FirstName,
-            MiddleName ,
-            Suffix ,
-            Address,
-            YrsofResidenceInManila ,
-            BirthPlace,
-            DateOfBirth ,
-            Gender,
-            Nationality ,
-            Age,
-            Barangay,
-            Zone,
-            District,
-            CivilStatus,
-            MobilePhone,
-            ValidIdPresented,
-            ProofOfValidID:{
-              public_id: result.public_id,
-              url: result.secure_url
-            }
-        });
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+const createUser = async (req, res) => {
+  try {
+    if (!req.file) {
+      console.log('No file uploaded');
+      return res.status(400).json({ error: 'No PDF uploaded' });
     }
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "pdf_files",
+    });
+
+    const {
+      TypeofApplication,
+      SurName,
+      FirstName,
+      MiddleName,
+      Suffix,
+      Address,
+      YrsofResidenceInManila,
+      BirthPlace,
+      DateOfBirth,
+      Gender,
+      Nationality,
+      Age,
+      Barangay,
+      Zone,
+      District,
+      CivilStatus,
+      MobilePhone,
+      ValidIdPresented,
+    } = req.body;
+
+    const user = await usersModel.create({
+      TypeofApplication,
+      SurName,
+      FirstName,
+      MiddleName,
+      Suffix,
+      Address,
+      YrsofResidenceInManila,
+      BirthPlace,
+      DateOfBirth,
+      Gender,
+      Nationality,
+      Age,
+      Barangay,
+      Zone,
+      District,
+      CivilStatus,
+      MobilePhone,
+      ValidIdPresented,
+      ProofOfValidID: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
+    });
+
+    console.log(user);
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
 };
+
+
+
 
 
 //delete a users
@@ -225,5 +230,4 @@ module.exports = {
     deleteUsers,
     updateUsers,
     searchUsers,
-    upload,
 }

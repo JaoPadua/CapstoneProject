@@ -74,7 +74,7 @@ elderLoginSchema.statics.login = async function(email,password){
       
       //const admin = await this.findOne({ email })
       const ElderUser = await this.findOne({ email })
-      console.log('Returned ElderUser:', ElderUser);
+      //console.log('Returned ElderUser:', ElderUser);
       if(!ElderUser) {
           throw Error('Does not Exist')
       }

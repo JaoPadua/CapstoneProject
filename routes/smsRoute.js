@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser  = require('body-parser')
-const {sendAcceptSMS, sendDenySMS} = require('../controllers/smsController')
+const {sendAcceptSMS, sendDenySMS,sendSmSText} = require('../controllers/smsController')
 const requireAuth = require('../middleware/requireAuth')
 const router = express.Router()
 
@@ -18,6 +18,7 @@ router.use(requireAuth)
 //acceptSMS Route
 router.post('/accept/:uid',logAccepted,sendAcceptSMS)
 
+router.post('/sendSmS/:uid', sendSmSText)
 
 //deniedSMS Route
 router.post('/deny/:uid',logDenied,sendDenySMS)
