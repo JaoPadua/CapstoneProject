@@ -122,8 +122,8 @@ const createUser = async (req, res) => {
       console.log('No file uploaded');
       return res.status(400).json({ error: 'No PDF uploaded' });
     }
-
-    const result = await cloudinary.uploader.upload(req.file.buffer, {
+    const fileStream = Readable.from(req.file.buffer);
+    const result = await cloudinary.uploader.upload(fileStream, {
       folder: "pdf_files",
     });
 
