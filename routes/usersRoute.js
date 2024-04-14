@@ -19,15 +19,7 @@ const logDelete = createLogMiddleware('Deleted Elder Data on ID verification')
 
 //multer
 // Configure multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/'); // Directory where files will be stored
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname); // File naming convention
-    },
-  });
-
+const storage = multer.memoryStorage(); 
   const upload = multer({ storage: storage });
 
 

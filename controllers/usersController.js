@@ -123,7 +123,7 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: 'No PDF uploaded' });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
+    const result = await cloudinary.uploader.upload(req.file.buffer, {
       folder: "pdf_files",
     });
 
