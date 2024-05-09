@@ -1,8 +1,9 @@
+
 const docsModels = require('../Models/documentsModels.js')
 const mongoose = require('mongoose')
 const multer = require('multer')
-//const cloudinary = require("../utils/cloudinary");
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("../utils/cloudinary");
+//const cloudinary = require('cloudinary').v2;
 
 
 
@@ -17,7 +18,7 @@ const getDocuments = async(req,res) =>{
 //get all news with paginations
 const getPaginatedDocuments = async (req,res) =>{
     const page = parseInt(req.query.page)  || 1; // Default to page 1 if not specified
-    const pageSize = parseInt(req.query.pageSize) || 5; // Default to 10 items per page
+    const pageSize = parseInt(req.query.pageSize) || 10; // Default to 10 items per page
     const totaldocuments = await docsModels.countDocuments();
     const totalPages = Math.ceil(totaldocuments / pageSize);  
   
@@ -38,21 +39,26 @@ const getPaginatedDocuments = async (req,res) =>{
   }
 
 
+//get a single docs
+const getDocument = async (req,res)=>{
+    const { uid } =req.params
+
+    if(!mongoose.isValidObjectId(uid)){
+        return res.status(404).json({error:'No documents was Found'})
+    }
+
+    const docs = await docsModels.findById(uid)
+
+    if(!docs ) {
+        return res.status(404).json({error: 'No documents Found'})
+    }
+
+    res.status(200).json(docs)
+}
 
 
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');  // Directory where files will be stored
-    },
-    filename: function (req, file, cb) {
-        //const uniqueSuffix = Date.now()
-      cb(null,file.originalname); // File naming convention
-    },
-  });
-  
-  const upload = multer({ storage: storage });
+
   
   
   //create a new users
@@ -65,13 +71,19 @@ const storage = multer.diskStorage({
   
         try {
           if (!req.file) {
-              console.log('file',req.files)
+              console.log('file',req.file)
               return res.status(400).json({ error: 'No PDF uploaded' });
           }
+          const options = {
+            use_filename: true,
+            unique_filename: false,
+            overwrite: true,
+            folder: "documents_pdf",
+          }
   
-          const result = await cloudinary.uploader.upload(req.file.path, {
-              folder: 'documents_pdf',
-          });
+          const base64String = req.file.buffer.toString('base64');
+          const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`,options);
+   
   
   
           const docs = await docsModels.create({
@@ -79,9 +91,10 @@ const storage = multer.diskStorage({
              descriptions,
              pdfDocuments:{
                 public_id: result.public_id,
-                url: result.secure_url
+                url: result.secure_url,
               }
           });
+          console.log('docs',docs)
           res.status(200).json(docs);
       } catch (error) {
           res.status(400).json({ error: error.message });
@@ -90,7 +103,7 @@ const storage = multer.diskStorage({
   
   
   
-//delete a users
+//delete a documents
 
 const deleteDocuments = async (req,res) =>{
     const {uid} = req.params
@@ -99,22 +112,82 @@ const deleteDocuments = async (req,res) =>{
         return res.status(404).json({error:'no docs to delete'})
     }
     const docs = await docsModels.findOneAndDelete({_id:uid})
-
+    const documentsPdfID = docs.pdfDocuments.public_id;
+    await cloudinary.uploader.destroy(documentsPdfID);
+    
     if(!docs ) {
         return res.status(404).json({error: 'No docs Found'})
     }
-
-    res.status(200).json(docs)
+    res.status(200).send('Deleted Docs')
 }
+
+const updateDocuments = async (req, res, next) => {
+    try {
+        const { uid } = req.params;
+        const { title, descriptions } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(uid)) {
+            return res.status(404).json({ error: 'Invalid document ID' });
+        }
+
+        const currentDocuments = await docsModels.findById(uid);
+
+        if (!currentDocuments) {
+            return res.status(404).json({ error: 'Document not found' });
+        }
+
+        const data = {};
+
+        // Update title if provided
+        if (title) {
+            data.title = title;
+        } else {
+            data.title = currentDocuments.title;
+        }
+
+        // Update descriptions if provided
+        if (descriptions) {
+            data.descriptions = descriptions;
+        } else {
+            data.descriptions = currentDocuments.descriptions;
+        }
+
+        // Update PDF if provided
+        if (req.file) {
+            const pdfID = currentDocuments.pdfDocuments ? currentDocuments.pdfDocuments.public_id : null;
+
+            if (pdfID) {
+                await cloudinary.uploader.destroy(pdfID);
+            }
+
+            const base64String = req.file.buffer.toString('base64');
+            const newDocs = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
+                folder: "documents_pdf",
+            });
+
+            data.pdfDocuments = {
+                public_id: newDocs.public_id,
+                url: newDocs.secure_url
+            };
+        }
+
+        const documentsUpdate = await docsModels.findByIdAndUpdate(uid, data, { new: true });
+
+        res.status(200).json(documentsUpdate);
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
+
 
 
 
 module.exports = {
     createDocument,
     getPaginatedDocuments,
-    //getDocument,
+    getDocument,
     getDocuments,
     deleteDocuments,
-    //updateDocuments,
-    upload,
+    updateDocuments,
 }

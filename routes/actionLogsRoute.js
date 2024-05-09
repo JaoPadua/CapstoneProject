@@ -1,7 +1,7 @@
 const express = require('express')
 
 //controller functions
-const {getAllLogs} = require('../controllers/logsController')
+const {getAllLogs,deleteLogs} = require('../controllers/logsController')
 
 //Router
 const router =express.Router()
@@ -9,7 +9,7 @@ const router =express.Router()
 
 router.get('/Logs',getAllLogs)
 
-router.post('/deleteLogs')
+router.delete('/deleteLogs/:uid',deleteLogs)
 
 
 

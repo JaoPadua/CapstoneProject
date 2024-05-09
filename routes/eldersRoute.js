@@ -16,7 +16,7 @@ const requireAuth = require('../middleware/requireAuth')
 const router = express.Router()
 
 
-const logDelete = createLogMiddleware('Deleted Elder Data')
+const logDelete = createLogMiddleware('Deleted Elder Data on Verified Tables')
 const logApproved = createLogMiddleware('Approved an Elder')
 //
 // require auth for all users routes

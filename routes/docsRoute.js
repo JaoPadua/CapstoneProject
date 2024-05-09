@@ -1,5 +1,5 @@
 const express = require('express')
-
+const multer = require('multer');
 const {
     createDocument,
     getDocument,
@@ -7,14 +7,23 @@ const {
     deleteDocuments,
     updateDocuments,
     getPaginatedDocuments,
-    upload,
 } = require("../controllers/documentsController")
 
 const createLogMiddleware = require('../middleware/logsMiddleware');
-const logDelete = createLogMiddleware('Deleted a Documents on document table')
+
+
+const logDelete = createLogMiddleware('Deleted a Document on document table')
+const logUpdate = createLogMiddleware('Updated a Document on document table')
+const logCreate = createLogMiddleware('Created a Document on document table')
 
 
 const router = express.Router()
+
+
+const storage = multer.memoryStorage(); 
+  const upload = multer({ storage: storage });
+
+
 
 //Get all documents
 router.get('/', getDocuments)
@@ -23,30 +32,25 @@ router.get('/', getDocuments)
 const requireAuth = require('../middleware/requireAuth')
 
 // require auth for all news routes
+
+
+//paginated documents
 router.use(requireAuth)
+router.get('/docs',getPaginatedDocuments)
 
 
 //create a new docs
-router.post('/', upload.single('pdfDocuments'), createDocument)
-
-//paginated news
-
-router.get('/docs',getPaginatedDocuments)
-
+router.post('/', upload.single('pdfDocuments'),createDocument)
 //Get single News
 
-//router.get('/:uid',getNew)
-
-//Post a new News
-
-router.post('/', createDocument);
+router.get('/:uid',getDocument)
 
 //DELETE a News
 
-router.delete('/:uid',logDelete, deleteDocuments)
+router.delete('/:uid', deleteDocuments)
 
 
 //Update a News?
-//router.patch('/:uid',logUpdate,updateNews)
+router.patch('/updateDocs/:uid',upload.single('pdfDocuments'),updateDocuments)
 
 module.exports = router

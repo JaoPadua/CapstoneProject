@@ -1,7 +1,7 @@
 const express = require('express')
 const {
   uploadExcel,
-  searchImportElders,
+  getAllImport,
   getImportElders,
   getImportedElder,
   updateImportElder,
@@ -25,12 +25,12 @@ router.use(requireAuth)
 
 router.post('/upload',logUpload,uploadExcel)
 
-//Get all users
+//Get paginated users
 router.get('/', getImportElders)
 
 
 //search elder
-router.get('/search', searchImportElders)
+router.get('/getAll', getAllImport)
 
 
 //Get single user

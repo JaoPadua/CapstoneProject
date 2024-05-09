@@ -1,7 +1,8 @@
 const Admin = require('../Models/adminModels')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-
+const nodemailer =require('nodemailer');
+const bcrypt = require('bcrypt')
 
 //token
 const createToken= (_id)=>{
@@ -101,6 +102,106 @@ const deleteAdmin= async (req,res) =>{
 }
 
 
+const forgotAdminPassword = async(req,res)=> {
+  const {email} = req.body
 
 
-module.exports = { signupAdmin, loginAdmin, getAdmin,deleteAdmin,getSingleAdmin }
+  if (!email) {
+    return res.status(400).json({ status: "Email is required" });
+}  
+
+  try{
+    const oldAdmin = await Admin.findOne({email:email})
+
+    if(!oldAdmin){
+      return res.status(404).json({ status: "error", message: "Admin not exist" });
+    }
+    const secret = process.env.SECRET + oldAdmin.password;
+    const token = jwt.sign({id: oldAdmin._id},secret, {expiresIn:"1h"});
+
+
+    
+var transporter = nodemailer.createTransport({
+service: process.env.SERVICE,
+auth: {
+  user: process.env.USER,
+  pass: process.env.PASS,
+}
+});
+
+var mailOptions = {
+from: process.env.HOST,
+to: oldAdmin.email,
+subject: 'Reset Admin Password',
+text: 'Please use the following link to reset your Admin password:',
+html: `<p>Please use the following link to reset your password:</p><a href="http://localhost:3000/reset-AdminPassword/${oldAdmin._id}/${token}">Reset Admin Password</a>`
+
+};
+
+transporter.sendMail(mailOptions, function (error, info) {
+if (error) {
+  console.error(error);
+  return res.status(500).json({ status: "Error sending email" });
+} else {
+  console.log('Email sent: ' + info.response);
+  return res.json({ status: 'Email sent: ' + info.response });
+}
+});
+} catch (error) {
+console.error(error);
+return res.status(500).json({ status: "Server error" });
+}
+};
+
+const resetAdminPassword = async (req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+
+  console.log("ID:", id, "Token:", token);
+
+  if (!password) {
+    return res.status(400).json({ Status: "Password is required" });
+}
+
+  try {
+      const oldAdmin = await Admin.findById(id);
+      if (!oldAdmin) {
+          return res.json(404).send("Admin not found");
+      }
+
+       // Decode the token to extract user data without verifying its signature
+    const decoded = jwt.decode(token);
+
+    // Check if the ID in the token matches the ID in the request parameter
+    if (!decoded || decoded.id !== id) {
+      return res.status(401).json({ Status: "Invalid token" });
+    }
+
+      const secret = process.env.SECRET + oldAdmin.password;
+      try {
+         jwt.verify(token, secret); 
+      } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ Status: "Token expired" });
+        } else {
+            return res.status(401).json({ Status: "Invalid or expired token" });
+        }
+    }
+
+      // Generate a salt and hash the new password
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+
+      // Update the user with the new hashed password
+      const updatedAdmin = await Admin.findByIdAndUpdate({_id:id}, { password: hash }, { new: true });
+      res.json({ Status: "Password updated successfully", User: updatedAdmin });
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("Server error during password reset.");
+  }
+};
+
+
+
+
+module.exports = { signupAdmin, loginAdmin, getAdmin,deleteAdmin,getSingleAdmin,forgotAdminPassword,resetAdminPassword }

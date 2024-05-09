@@ -2,7 +2,7 @@ const express = require('express')
 
 //controller functions
 
-const {loginAdmin, signupAdmin,getAdmin,deleteAdmin, getSingleAdmin} = require('../controllers/adminController')
+const {loginAdmin, signupAdmin,getAdmin,deleteAdmin, getSingleAdmin, forgotAdminPassword,resetAdminPassword} = require('../controllers/adminController')
 
 const createLogMiddleware = require('../middleware/logsMiddleware');
 
@@ -31,5 +31,10 @@ router.get('/getSingleAdmin/:uid',getSingleAdmin)
 //delete Admin
 
 router.delete('/:uid', deleteAdmin)
+
+router.post('/forgotAdminPass',forgotAdminPassword)
+
+router.post('/reset-AdminPass/:id/:token',resetAdminPassword)
+
 
 module.exports = router

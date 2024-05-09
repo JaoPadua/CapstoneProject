@@ -1,6 +1,8 @@
 const elderModels = require('../Models/verifiedElderModel')
 const userModels = require('../Models/usersModel')
 const mongoose = require('mongoose')
+const cloudinary = require("../utils/cloudinary");
+
 
 //get all users
 const getElders = async(req,res) =>{
@@ -105,6 +107,7 @@ const moveElder = async (req, res) => {
         Barangay: user.Barangay,
         Zone: user.Zone,
         District: user.District,
+        Status: user.Status,
         CivilStatus: user.CivilStatus,
         MobilePhone: user.MobilePhone,
 
@@ -114,7 +117,9 @@ const moveElder = async (req, res) => {
       await newElder.save();
   
       // 3. Optionally, remove the user record from the source collection
-      await userModels.findByIdAndDelete(uid);
+      const users = await userModels.findByIdAndDelete(uid);
+      const pdfID = users.ProofOfValidID.public_id;
+      await cloudinary.uploader.destroy(pdfID);
   
       res.json({ message: 'User moved to Elders collection' });
     } catch (error) {

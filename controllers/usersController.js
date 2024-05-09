@@ -127,6 +127,8 @@ const createUser = async (req, res) => {
 
      const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
          folder: "pdf_files",
+         use_filename: true,
+         unique_filename: false       
      });
 
     const {
@@ -146,6 +148,7 @@ const createUser = async (req, res) => {
       Zone,
       District,
       CivilStatus,
+      Status,
       MobilePhone,
       ValidIdPresented,
     } = req.body;
@@ -167,6 +170,7 @@ const createUser = async (req, res) => {
       Zone,
       District,
       CivilStatus,
+      Status,
       MobilePhone,
       ValidIdPresented,
       ProofOfValidID: {
@@ -196,6 +200,8 @@ const deleteUsers = async (req,res) =>{
         return res.status(404).json({error:'no user to delete'})
     }
     const user = await usersModel.findOneAndDelete({_id:uid})
+    const pdfID = user.ProofOfValidID.public_id;
+    await cloudinary.uploader.destroy(pdfID);
 
     if(!user ) {
         return res.status(404).json({error: 'No user Found'})

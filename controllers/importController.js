@@ -36,33 +36,11 @@ const getImportElders = async(req,res) =>{
     });
 }
 
-const searchImportElders = async (req, res) => {
-    const { q } = req.query;
-  
-    const keys = ["LastName", "FirstName", "MiddleName", "Address", "BirthPlace", "Gender", "Barangay", "District","Zone"];
-  
-    const search = (data) => {
-      return data.filter((item) =>
-      keys.some((key) => item[key].toLowerCase().includes(q))
-      );
-    };
-  
-    try {
-      if (q) {
-        const elders = await ImportedElder.find().exec();
-        //console.log('Elder Records Found:', elders);
-        const searchResults = search(elders);
-        //console.log('Search Results:', searchResults);
-        res.json(searchResults.slice(0, 10));
-      } else {
-        const elders = await ImportedElder.find({}).sort({ createdAt: -1 });
-        res.json(elders);
-      }
-    } catch (error) {
-      console.error('Error in searchElder:', error);
-      res.status(500).json({ error: 'An error occurred' });
-    }
-  };
+const getAllImport = async(req,res) =>{
+  const elders = await ImportedElder.find({}).sort({createdAt:-1})
+  res.status(200).json(elders)
+}
+
 
 const getImportedElder = async (req,res)=>{
     const { uid } =req.params
@@ -150,7 +128,7 @@ const uploadExcel = async (req, res) => {
 
 module.exports = {
   uploadExcel,
-  searchImportElders,
+  getAllImport,
   getImportElders,
   getImportedElder,
   updateImportElder,

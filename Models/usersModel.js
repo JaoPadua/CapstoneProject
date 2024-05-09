@@ -71,6 +71,10 @@ const usersSchema = new Schema({
         type:String,
         required:true
     },
+    Status:{
+        type:String,
+        required:true
+    },
     MobilePhone:{
         type:String,
         required:true

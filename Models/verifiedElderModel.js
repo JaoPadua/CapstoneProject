@@ -63,6 +63,10 @@ const verifiedElder = new Schema({
         type:String,
         required:true
     },
+    Status:{
+        type:String,
+        required:true
+    },
     CivilStatus:{
         type:String,
         required:true
