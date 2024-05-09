@@ -25,8 +25,7 @@ const storage = multer.memoryStorage();
 
 
 
-//Get all documents
-router.get('/', getDocuments)
+
 
 
 const requireAuth = require('../middleware/requireAuth')
@@ -36,6 +35,11 @@ const requireAuth = require('../middleware/requireAuth')
 
 //paginated documents
 router.use(requireAuth)
+
+
+//Get all documents
+router.get('/', getDocuments)
+
 router.get('/docs',getPaginatedDocuments)
 
 
