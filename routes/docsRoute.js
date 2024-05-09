@@ -40,7 +40,7 @@ router.get('/docs',getPaginatedDocuments)
 
 
 //create a new docs
-router.post('/', upload.single('pdfDocuments'),createDocument)
+router.post('/createDocs', upload.single('pdfDocuments'),createDocument)
 //Get single News
 
 router.get('/:uid',getDocument)
