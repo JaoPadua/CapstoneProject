@@ -1,5 +1,4 @@
-require('dotenv').config()
-
+const dotenv= require('dotenv')
 const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
@@ -16,6 +15,7 @@ const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
 
 
+dotenv.config()
 
 
 //express app call
@@ -42,7 +42,7 @@ app.use(cors(corsOptions));*/
 
 
 // CORS options
-const corsOptions = {
+/*const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = ['https://elderlysquire.online', 'http://localhost:3000'];  // Add all your client URLs here
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -53,17 +53,21 @@ const corsOptions = {
     },
     credentials: true,  // Allows cookies and other credentials to be sent with the request
     optionsSuccessStatus: 200 // For legacy browser support (IE)
-};
+};*/
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 //middleware
-app.use((req, res, next)=>{
+/*app.use((req, res, next)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     next();
-})
+})*/
+
+app.use(cors())
+
+
 
 //api
 
