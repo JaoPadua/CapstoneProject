@@ -34,7 +34,7 @@ app.use("/uploads",express.static("uploads"))
 //Corrs to unblock Access-Control-Allow-Origin
 const cors =require('cors')
 const corsOptions ={
-    origin:'https://elderlysquire.online/', 
+    origin:'*', 
     credentials:true,            //access-control-allow-credentials:true
     optionsSuccessStatus:200,
 }
