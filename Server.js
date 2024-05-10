@@ -13,7 +13,7 @@ const portalRoute = require('./routes/elderLoginRoute')
 const actionLogsRoute = require('./routes/actionLogsRoute')
 const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
-
+const cors = require('cors')
 
 dotenv.config()
 
