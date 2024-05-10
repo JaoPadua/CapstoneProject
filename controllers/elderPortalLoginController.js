@@ -109,7 +109,8 @@ var mailOptions = {
   to: oldUser.email,
   subject: 'Reset Password',
   text: 'Please use the following link to reset your password:',
-  html: `<p>Please use the following link to reset your password:</p><a href="https://elderlysquire.online/reset-password/${oldUser._id}/${token}">Reset Password</a>`
+  html: `<p>Please use the following link to reset your password:</p>
+  <a href=https://elderlysquire.online/reset-password/${oldUser._id}/${token}">Reset Password</a>`
 
 };
 
