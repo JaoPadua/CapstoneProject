@@ -55,6 +55,7 @@ const corsOptions = {
     optionsSuccessStatus: 200 // For legacy browser support (IE)
 };
 
+app.use(cors(corsOptions));
 
 //middleware
 app.use((req, res, next)=>{
