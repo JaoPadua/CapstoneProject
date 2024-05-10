@@ -33,12 +33,12 @@ app.use("/uploads",express.static("uploads"))
 
 //Corrs to unblock Access-Control-Allow-Origin old corss
 const cors =require('cors')
-const corsOptions ={
+/*const corsOptions ={
     origin:'https://elderlysquire.online', 
     credentials:true,            //access-control-allow-credentials:true
     optionsSuccessStatus:200,
 }
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));*/
 
 
 // CORS options
@@ -58,12 +58,12 @@ app.use(cors(corsOptions));
 //app.use(cors(corsOptions));
 
 //middleware
-/*app.use((req, res, next)=>{
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+app.use((req, res, next)=>{
+    res.setHeader("Access-Control-Allow-Origin", "https://elderlysquire.online");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE,PATCH");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     next();
-})*/
+})
 
 //app.use(cors())
 
