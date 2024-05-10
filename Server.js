@@ -31,15 +31,29 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
 app.use("/uploads",express.static("uploads"))
 
-//Corrs to unblock Access-Control-Allow-Origin
-const cors =require('cors')
+//Corrs to unblock Access-Control-Allow-Origin old corss
+/*const cors =require('cors')
 const corsOptions ={
     origin:'*', 
     credentials:true,            //access-control-allow-credentials:true
     optionsSuccessStatus:200,
 }
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));*/
 
+
+// CORS options
+const corsOptions = {
+    origin: function (origin, callback) {
+        const allowedOrigins = ['https://elderlysquire.online', 'http://localhost:3000'];  // Add all your client URLs here
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);  // Allow
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,  // Allows cookies and other credentials to be sent with the request
+    optionsSuccessStatus: 200 // For legacy browser support (IE)
+};
 
 
 //middleware
