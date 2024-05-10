@@ -1,4 +1,5 @@
-const dotenv= require('dotenv')
+require('dotenv').config()
+
 const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
@@ -13,9 +14,8 @@ const portalRoute = require('./routes/elderLoginRoute')
 const actionLogsRoute = require('./routes/actionLogsRoute')
 const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
-const cors = require('cors')
 
-dotenv.config()
+
 
 
 //express app call
@@ -58,14 +58,14 @@ app.use(cors(corsOptions));*/
 //app.use(cors(corsOptions));
 
 //middleware
-/*app.use((req, res, next)=>{
+app.use((req, res, next)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     next();
-})*/
+})
 
-app.use(cors())
+//app.use(cors())
 
 
 
