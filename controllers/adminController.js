@@ -117,7 +117,7 @@ const forgotAdminPassword = async(req,res)=> {
       return res.status(404).json({ status: "error", message: "Admin not exist" });
     }
     const secret = process.env.SECRET + oldAdmin.password;
-    const token = jwt.sign({id: oldAdmin._id},secret, {expiresIn:"1h"});
+    const token = jwt.sign({id: oldAdmin._id},secret, {expiresIn:"1d"});
 
 
     

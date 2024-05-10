@@ -4,12 +4,12 @@ const express = require('express')
 
 const {signupElder,loginElder,forgotPassword,resetPassword,getElderProfile} =require('../controllers/elderPortalLoginController.js')
 
-const requireAuth = require('../middleware/requireAuth')
+//const requireAuth = require('../middleware/requireAuth')
 //Router
 const router = express.Router()
 
 //getElderProfile
-router.get('/elderProfile/:uid',requireAuth,getElderProfile)
+//router.get('/elderProfile/:uid',requireAuth,getElderProfile)
 
 
 //login to portal

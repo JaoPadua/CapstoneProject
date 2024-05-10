@@ -92,7 +92,7 @@ const loginElder = async (req, res) => {
         return res.status(404).json({ status: "error", message: "Elder not exist" });
       }
       const secret = process.env.SECRET + oldUser.password;
-      const token = jwt.sign({id: oldUser._id},secret, {expiresIn:"30m"});
+      const token = jwt.sign({id: oldUser._id},secret, {expiresIn:"1d"});
 
 
       
