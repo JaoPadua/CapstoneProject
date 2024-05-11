@@ -74,11 +74,11 @@ const loginElder = async (req, res) => {
         
       } catch (error){
         if (error.message === "Email already exists") {
-          res.status(409).json({ status: "error", message: "Email already exist" });;
+          return res.status(409).json({ status: "error", message: "Email already exist" });;
         } else {
-          res.status(400).json({ error: error.message });
+          return res.status(400).json({ error: error.message });
         }
-      }
+      }     
   }
   
 
