@@ -70,10 +70,14 @@ const loginElder = async (req, res) => {
         const token = createToken(elder._id)
   
         res.status(200).json({firstName,lastName,email,token})
-  
-  
+        
+        
       } catch (error){
-        res.status(400).json({error:error.message})
+        if (error.message === "Email already exists") {
+          res.status(409).json({ error: error.message });
+        } else {
+          res.status(400).json({ error: error.message });
+        }
       }
   }
   
