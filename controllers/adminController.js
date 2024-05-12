@@ -39,6 +39,13 @@ const signupAdmin = async (req, res) => {
   //console.log('body', req.body)
 
     try{
+        // Check if email already exists throw an error
+        const exist = await Admin.findOne({ email:email });
+        if (exist) {
+          return res.status(409).json({ status: "error", message: "Admin Email already exists." });
+      }  
+
+      
       const admin = await Admin.signup(firstName,lastName,email,password,role)
       //console.log('admin',admin)
       //create a token
