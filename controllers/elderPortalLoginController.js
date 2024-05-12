@@ -64,6 +64,14 @@ const loginElder = async (req, res) => {
       console.log('body', req.body)
     
         try{
+
+        // Check if email already exists throw an error
+        const exist = await this.findOne({ email:email });
+        if (exist) {
+          return res.status(409).json({ status: "error", message: "Email already exists." });
+      }  
+
+
           const elder = await elderModelsLogin.signup(firstName,lastName,email,password)
           console.log('elder',elder)
           //create a token
@@ -76,11 +84,7 @@ const loginElder = async (req, res) => {
           console.error('Error in signupElder:', error);
           res.status(500).json({ status: "error", message: "An error occurred during signup." });
       }      
-              // Check if email already exists throw an error
-        const exist = await this.findOne({ email:email });
-        if (exist) {
-          return res.status(409).json({ status: "error", message: "Email already exists." });
-      }     
+         
     }
   
 
