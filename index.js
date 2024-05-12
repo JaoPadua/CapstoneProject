@@ -72,7 +72,7 @@ app.use(cors(corsOptions));
 //api
 
 app.get("/", (req,res) =>{
-    res.json("WELCOME TO OSCA API")
+    res.json("WELCOME TO OSCA API BACKEND")
 }
 )
 
