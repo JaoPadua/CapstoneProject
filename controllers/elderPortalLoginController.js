@@ -76,7 +76,7 @@ const loginElder = async (req, res) => {
           console.error('Error in signupElder:', error);
           res.status(500).json({ status: "error", message: "An error occurred during signup." });
       }      
-              // Check if email already exists
+              // Check if email already exists throw an error
         const exist = await this.findOne({ email:email });
         if (exist) {
           return res.status(409).json({ status: "error", message: "Email already exists." });
