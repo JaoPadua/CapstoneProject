@@ -58,28 +58,30 @@ const loginElder = async (req, res) => {
   
   
   // signup a admin
-  const signupElder = async (req, res) => {
-    const {firstName,lastName,email,password} = req.body
+    const signupElder = async (req, res) => {
+      const {firstName,lastName,email,password} = req.body
+      
+      console.log('body', req.body)
     
-    console.log('body', req.body)
-  
-      try{
-        const elder = await elderModelsLogin.signup(firstName,lastName,email,password)
-        console.log('elder',elder)
-        //create a token
-        const token = createToken(elder._id)
-  
-        res.status(200).json({firstName,lastName,email,token})
-        
-        
-      } catch (error){
-        if (error.message === "Email already exists") {
-          return res.status(409).json({ status: "error", message: "Email already exist" });;
-        } else {
-          return res.status(400).json({ error: error.message });
-        }
+        try{
+          const elder = await elderModelsLogin.signup(firstName,lastName,email,password)
+          console.log('elder',elder)
+          //create a token
+          const token = createToken(elder._id)
+    
+          res.status(200).json({firstName,lastName,email,token})
+          
+          
+        } catch (error) {
+          console.error('Error in signupElder:', error);
+          res.status(500).json({ status: "error", message: "An error occurred during signup." });
+      }      
+              // Check if email already exists
+        const exist = await this.findOne({ email:email });
+        if (exist) {
+          return res.status(409).json({ status: "error", message: "Email already exists." });
       }     
-  }
+    }
   
 
   const forgotPassword = async(req,res)=> {
