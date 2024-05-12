@@ -66,7 +66,7 @@ const loginElder = async (req, res) => {
         try{
 
         // Check if email already exists throw an error
-        const exist = await this.findOne({ email:email });
+        const exist = await elderModelsLogin.findOne({ email:email });
         if (exist) {
           return res.status(409).json({ status: "error", message: "Email already exists." });
       }  
