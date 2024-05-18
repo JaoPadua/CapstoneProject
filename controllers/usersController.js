@@ -128,7 +128,7 @@ const createUser = async (req, res) => {
      const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
          folder: "pdf_files",
          use_filename: true,
-         unique_filename: false       
+         unique_filename: false,
      });
 
     const {
