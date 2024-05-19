@@ -125,6 +125,9 @@ const createUser = async (req, res) => {
 
     const originalFileName = req.file.originalname;
     const baseFileName = originalFileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+    const uniqueSuffix = Date.now();
+
+    const uniqueFileName = `${baseFileName}_${uniqueSuffix}`;
 
 
      // Convert buffer to base64-encoded string
@@ -132,9 +135,7 @@ const createUser = async (req, res) => {
 
      const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
          folder: "pdf_files",
-         use_filename: true,
-         public_id: baseFileName,
-         unique_filename: false,
+         public_id: uniqueFileName,
      });
 
     const {

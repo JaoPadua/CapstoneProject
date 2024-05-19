@@ -77,9 +77,13 @@ const getDocument = async (req,res)=>{
 
           const originalFileName = req.file.originalname;
           const baseFileName = originalFileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+          const uniqueSuffix = Date.now();
+      
+          const uniqueFileName = `${baseFileName}_${uniqueSuffix}`;
+
           const options = {
             use_filename: true,
-            public_id: baseFileName,
+            public_id: uniqueFileName,
             unique_filename: false,
             overwrite: true,
             folder: "documents_pdf",
@@ -166,10 +170,13 @@ const updateDocuments = async (req, res, next) => {
 
             const originalFileName = req.file.originalname;
             const baseFileName = originalFileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+            const uniqueSuffix = Date.now();
+        
+            const uniqueFileName = `${baseFileName}_${uniqueSuffix}`;
 
             const options = {
                 use_filename: true,
-                public_id: baseFileName,
+                public_id: uniqueFileName,
                 unique_filename: false,
                 overwrite: true,
                 folder: "documents_pdf",
