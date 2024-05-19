@@ -122,12 +122,18 @@ const createUser = async (req, res) => {
       console.log('No file uploaded');
       return res.status(400).json({ error: 'No PDF uploaded' });
     }
+
+    const originalFileName = req.file.originalname;
+    const baseFileName = originalFileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+
+
      // Convert buffer to base64-encoded string
      const base64String = req.file.buffer.toString('base64');
 
      const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
          folder: "pdf_files",
          use_filename: true,
+         public_id: baseFileName,
          unique_filename: false,
      });
 

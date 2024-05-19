@@ -13,7 +13,7 @@ const router = express.Router()
 
 const createLogMiddleware = require('../middleware/logsMiddleware');
 
-const logDelete = createLogMiddleware('Deleted Elder Data on ID verification')
+const logDelete = createLogMiddleware('Deleted Elder Data on Unverified Elder Table')
 
 
 

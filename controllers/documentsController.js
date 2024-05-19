@@ -74,8 +74,12 @@ const getDocument = async (req,res)=>{
               console.log('file',req.file)
               return res.status(400).json({ error: 'No PDF uploaded' });
           }
+
+          const originalFileName = req.file.originalname;
+          const baseFileName = originalFileName.replace(/\.[^/.]+$/, ""); // Remove file extension
           const options = {
             use_filename: true,
+            public_id: baseFileName,
             unique_filename: false,
             overwrite: true,
             folder: "documents_pdf",
@@ -160,10 +164,21 @@ const updateDocuments = async (req, res, next) => {
                 await cloudinary.uploader.destroy(pdfID);
             }
 
-            const base64String = req.file.buffer.toString('base64');
-            const newDocs = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
+            const originalFileName = req.file.originalname;
+            const baseFileName = originalFileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+
+            const options = {
+                use_filename: true,
+                public_id: baseFileName,
+                unique_filename: false,
+                overwrite: true,
                 folder: "documents_pdf",
-            });
+              }
+
+            const base64String = req.file.buffer.toString('base64');
+            const newDocs = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, 
+                options)
+    
 
             data.pdfDocuments = {
                 public_id: newDocs.public_id,
