@@ -32,7 +32,7 @@ const verifiedElder = new Schema({
         required:true
     },
     YrsofResidenceInManila:{
-        type:Number,
+        type:String,
         required:true
     },
     BirthPlace:{

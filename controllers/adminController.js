@@ -164,7 +164,7 @@ const resetAdminPassword = async (req, res) => {
   const { id, token } = req.params;
   const { password } = req.body;
 
-  console.log("ID:", id, "Token:", token);
+  //console.log("ID:", id, "Token:", token);
 
   if (!password) {
     return res.status(400).json({ Status: "Password is required" });
