@@ -12,7 +12,7 @@ const getImportElders = async(req,res) =>{
 
   //search query
   const search = req.query.search || "";
-  const keys = ["LAST NAME", "FIRST NAME", "MIDDLE NAME","SUFFIX  ", "STREET NAME", "GENDER", "BRGY", "DISTRICT NO","ZONE", "STATUS"];
+  const keys = ["LAST NAME", "FIRST NAME", "MIDDLE NAME","SUFFIX", "STREET NAME", "GENDER", "BRGY", "DISTRICT NO","ZONE", "STATUS"];
   const searchQuery = keys.map(key => ({ [key]: { $regex: search, $options: "i" } }));
 
   
