@@ -4,6 +4,45 @@ const mongoose = require('mongoose')
 const nodemailer =require('nodemailer');
 const bcrypt = require('bcrypt')
 
+// Middleware to check concurrent sessions
+
+const generateSessionID = (length = 16) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let sessionID = '';
+  for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      sessionID += characters.charAt(randomIndex);
+  }
+  return sessionID;
+};
+
+  const activeSessions = {};
+
+  const checkConcurrentSessionAdmin = (req, res, next) => {
+    const { _id } = req.session.Admin; // Assuming _id is present in elderModelsLogin
+  
+    let adminsessionID = req.cookies.myCookieAdmin; // Get the sessionID from the cookie
+  
+    // If sessionID doesn't exist in the cookie, generate a new one
+    if (!sessionID) {
+      adminsessionID = generateSessionID();
+      res.cookie('AdminmyCookie', adminsessionID, { httpOnly: true });
+    }
+  
+    // Check if the user is already logged in from another session
+    if (activeSessions[_id] && activeSessions[_id] !== adminsessionID) {
+      return res.status(403).json({ error: 'User already logged in from another session' });
+    }
+  
+    // Update the active session for the user
+    activeSessions[_id] = adminsessionID;s
+    console.log('Active Admin session ID:', adminsessionID);
+  
+    next();
+  };
+
+
+
 //token
 const createToken= (_id)=>{
  return jwt.sign({_id,
@@ -20,17 +59,65 @@ const loginAdmin = async (req, res) => {
     const admin = await Admin.login(email,password)
 
     //create a token
-    const{role,firstName,lastName} = admin;
+    const{_id,role,firstName,lastName} = admin;
+
+    const sessionID = generateSessionID();
+
+    // Check if the user is already logged in
+    if (activeSessions[email]) {
+      return res.status(403).json({ error: 'User already logged in from another session',adminsessionID: activeSessions[email] });
+    } else{
+      delete activeSessions[email]
+    }
+  
+    req.session.Admin = { _id: admin._id, email, firstName, lastName,role};
+    activeSessions[email] = req.sessionID;
+    
+    delete activeSessions[_id];
+
+
+    // Set the cookie with the session ID
+    res.cookie('AdminmyCookie', { sessionID }, { httpOnly: true });
+
     const token = createToken(admin._id)
 
     res.status(200).json({firstName,lastName,email,role ,token})
 
+    console.log('Admin session',req.session.Admin)
+    console.log('admin sessionID:', sessionID);
 
   } catch (error){
     res.status(400).json({error:error.message})
   }
 }
 
+
+//logout admin
+const logoutAdmin = async (req, res) => { 
+  const { email } = req.body;
+
+  try {
+    if (!email) {
+      return res.status(400).json({ error: 'Email parameter is missing or undefined' });
+    }
+
+    console.log('Before logout:', activeSessions);
+    delete activeSessions[email];
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to log out' });
+      }
+
+      console.log('Session deleted successfully for email:', email);
+      console.log('After logout:', activeSessions);
+      res.status(200).json({ message: 'Logged out successfully' });
+    });
+
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
 // signup a admin
 const signupAdmin = async (req, res) => {
@@ -211,4 +298,4 @@ const resetAdminPassword = async (req, res) => {
 
 
 
-module.exports = { signupAdmin, loginAdmin, getAdmin,deleteAdmin,getSingleAdmin,forgotAdminPassword,resetAdminPassword }
+module.exports = { signupAdmin, loginAdmin, getAdmin,deleteAdmin,getSingleAdmin,forgotAdminPassword,resetAdminPassword,checkConcurrentSessionAdmin,logoutAdmin }

@@ -14,8 +14,9 @@ const portalRoute = require('./routes/elderLoginRoute')
 const actionLogsRoute = require('./routes/actionLogsRoute')
 const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
-
-
+const MongoStore  = require('connect-mongo');
+const session = require('express-session');
+s
 
 
 //express app call
@@ -40,6 +41,18 @@ const corsOptions ={
 }
 app.use(cors(corsOptions));
 
+
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+     },
+     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    }));
 
 // CORS options
 /*const corsOptions = {

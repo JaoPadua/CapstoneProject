@@ -2,7 +2,7 @@ const express = require('express')
 
 //controller functions
 
-const {loginAdmin, signupAdmin,getAdmin,deleteAdmin, getSingleAdmin, forgotAdminPassword,resetAdminPassword} = require('../controllers/adminController')
+const {loginAdmin, signupAdmin,getAdmin,deleteAdmin, getSingleAdmin, forgotAdminPassword,resetAdminPassword,checkConcurrentSessionAdmin,logoutAdmin} = require('../controllers/adminController')
 
 const createLogMiddleware = require('../middleware/logsMiddleware');
 
@@ -15,11 +15,15 @@ const router =express.Router()
 
 
 //login Route
-router.post('/login', loginAdmin)
+router.post('/login', loginAdmin,checkConcurrentSessionAdmin)
+
 
 //signup Route
 
 router.post('/signup',signupAdmin)
+//logout route
+router.post('/logoutAdmin', logoutAdmin)
+
 
 
 //get admin Router

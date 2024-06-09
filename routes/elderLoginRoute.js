@@ -2,7 +2,7 @@ const express = require('express')
 
 //controller functions
 
-const {signupElder,loginElder,forgotPassword,resetPassword,getElderProfile} =require('../controllers/elderPortalLoginController.js')
+const {signupElder,loginElder,forgotPassword,resetPassword,checkConcurrentSession,logoutElder} =require('../controllers/elderPortalLoginController.js')
 
 //const requireAuth = require('../middleware/requireAuth')
 //Router
@@ -13,8 +13,10 @@ const router = express.Router()
 
 
 //login to portal
-router.post('/ElderLogin', loginElder)
+router.post('/ElderLogin', loginElder,checkConcurrentSession)
 
+//logout to portal
+router.post('/logout', logoutElder)
 
 //signup for portal
 
