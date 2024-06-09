@@ -109,6 +109,10 @@ const logoutAdmin = async (req, res) => {
     if (!req.session) {
       return res.status(400).json({ error: 'No session found' });
     }
+
+    res.clearCookie('connect.sid', { path: '/' });
+    res.clearCookie('myCookie')
+
     delete activeSessions[email];
     if(req.session){
     req.session.destroy(err => {

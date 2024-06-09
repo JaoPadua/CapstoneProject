@@ -134,9 +134,16 @@ if (!email) {
 
 console.log('Before logout:', activeSessions);
 
+
+
 if (!req.session) {
   return res.status(400).json({ error: 'No session found' });
 }
+
+res.clearCookie('connect.sid', { path: '/' });
+res.clearCookie('myCookie')
+
+
 delete activeSessions[email];
 req.session.destroy(err => {
   if (err) {
