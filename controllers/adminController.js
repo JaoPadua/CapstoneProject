@@ -35,7 +35,7 @@ const generateSessionID = (length = 16) => {
     }
   
     // Update the active session for the user
-    activeSessions[_id] = adminsessionID;s
+    activeSessions[_id] = adminsessionID;
     console.log('Active Admin session ID:', adminsessionID);
   
     next();
