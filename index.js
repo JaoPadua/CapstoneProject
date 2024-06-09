@@ -16,7 +16,7 @@ const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
 const MongoStore  = require('connect-mongo');
 const session = require('express-session');
-s
+
 
 
 //express app call
