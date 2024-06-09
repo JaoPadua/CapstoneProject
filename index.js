@@ -51,7 +51,11 @@ app.use(session({
         maxAge: 60 * 60 * 1000,
         httpOnly: true,
      },
-     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI,
+        autoRemove: 'interval', // Set auto-remove strategy
+        autoRemoveInterval: 60 // Cleanup interval in minutes
+
+      }),
     }));
 
 // CORS options
