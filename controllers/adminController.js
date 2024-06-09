@@ -111,7 +111,7 @@ const logoutAdmin = async (req, res) => {
     }
 
     res.clearCookie('connect.sid', { path: '/' });
-    res.clearCookie('myCookie')
+    res.clearCookie('AdminmyCookie')
 
     delete activeSessions[email];
     if(req.session){
