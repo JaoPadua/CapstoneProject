@@ -133,6 +133,10 @@ if (!email) {
 }
 
 console.log('Before logout:', activeSessions);
+
+if (!req.session) {
+  return res.status(400).json({ error: 'No session found' });
+}
 delete activeSessions[email];
 req.session.destroy(err => {
   if (err) {

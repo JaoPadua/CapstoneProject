@@ -101,8 +101,16 @@ const logoutAdmin = async (req, res) => {
       return res.status(400).json({ error: 'Email parameter is missing or undefined' });
     }
 
+
+
+
     console.log('Before logout:', activeSessions);
+
+    if (!req.session) {
+      return res.status(400).json({ error: 'No session found' });
+    }
     delete activeSessions[email];
+    if(req.session){
     req.session.destroy(err => {
       if (err) {
         return res.status(500).json({ error: 'Failed to log out' });
@@ -112,7 +120,7 @@ const logoutAdmin = async (req, res) => {
       console.log('After logout:', activeSessions);
       res.status(200).json({ message: 'Logged out successfully' });
     });
-
+  }
   } catch (error) {
     console.error('Error during logout:', error);
     res.status(500).json({ error: 'Server error' });
