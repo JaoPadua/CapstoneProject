@@ -24,7 +24,7 @@ const generateSessionID = (length = 16) => {
     let adminsessionID = req.cookies.myCookieAdmin; // Get the sessionID from the cookie
   
     // If sessionID doesn't exist in the cookie, generate a new one
-    if (!sessionID) {
+    if (!adminsessionID) {
       adminsessionID = generateSessionID();
       res.cookie('AdminmyCookie', adminsessionID, { httpOnly: true });
     }
@@ -71,7 +71,7 @@ const loginAdmin = async (req, res) => {
     }
   
     req.session.Admin = { _id: admin._id, email, firstName, lastName,role};
-    activeSessions[email] = req.sessionID;
+    activeSessions[email] = req.adminsessionID;
     
     delete activeSessions[_id];
 
