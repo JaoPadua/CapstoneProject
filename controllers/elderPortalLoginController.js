@@ -148,6 +148,9 @@ res.clearCookie('myCookie')
 req.session.destroy(err => {
   if (err) {
     return res.status(500).json({ error: 'Failed to log out' });
+  }else{
+    req.session = null;
+    console.log("logout successful");
   }
   delete activeSessions[email];
   console.log('Session deleted successfully for email:', email);

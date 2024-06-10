@@ -16,7 +16,7 @@ const docsRoute = require('./routes/docsRoute')
 const mongoose = require('mongoose')
 const MongoStore  = require('connect-mongo');
 const session = require('express-session');
-
+const cookieParser  = require('cookie-parser'); 
 
 
 //express app call
@@ -44,6 +44,7 @@ const corsOptions ={
 }
 app.use(cors(corsOptions));
 
+app.use(cookieParser('secret'));
 
 
 app.use(session({
@@ -51,12 +52,13 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 1000,
+        maxAge: new Date(Date.now() + 360000),
         httpOnly: true,
      },
      store: MongoStore.create({ mongoUrl: process.env.MONGO_URI,
-        autoRemove: 'interval', // Set auto-remove strategy
-        autoRemoveInterval: 60 // Cleanup interval in minutes
+        clear_interval: 3600,
+        autoRemoveInterval: 60,
+        autoRemove: 'interval', // Cleanup interval in minutes
 
       }),
     }));
