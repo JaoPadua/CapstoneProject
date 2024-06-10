@@ -22,6 +22,9 @@ const session = require('express-session');
 //express app call
 const app = express()
 
+
+
+
 //middleware
 //to make the image Base64 into small size
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -47,7 +50,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true,
+    cookie: { secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 1000,
         httpOnly: true,
      },

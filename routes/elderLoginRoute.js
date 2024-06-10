@@ -13,7 +13,7 @@ const router = express.Router()
 
 
 //login to portal
-router.post('/ElderLogin', loginElder,checkConcurrentSession)
+router.post('/ElderLogin', loginElder)
 
 //logout to portal
 router.post('/logout', logoutElder)

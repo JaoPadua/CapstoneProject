@@ -71,7 +71,7 @@ const loginAdmin = async (req, res) => {
     }
   
     req.session.Admin = { _id: admin._id, email, firstName, lastName,role};
-    activeSessions[email] = req.adminsessionID;
+    activeSessions[email] = req.sessionID;
     
     delete activeSessions[_id];
 
