@@ -100,22 +100,26 @@ const logoutAdmin = async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: 'Email parameter is missing or undefined' });
     }
+
+
+
+
     console.log('Before logout:', activeSessions);
 
     if (!req.session) {
       return res.status(400).json({ error: 'No session found' });
     }
 
-  res.clearCookie('connect.sid', { path: '/' });
+    res.clearCookie('connect.sid', { path: '/' });
     res.clearCookie('AdminmyCookie')
 
     delete activeSessions[email];
-     // Destroy session
-      if(req.session){
+    if(req.session){
     req.session.destroy(err => {
       if (err) {
         return res.status(500).json({ error: 'Failed to log out' });
       }
+
       console.log('Session deleted successfully for email:', email);
       console.log('After logout:', activeSessions);
       res.status(200).json({ message: 'Logged out successfully' });
