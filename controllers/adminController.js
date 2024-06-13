@@ -106,8 +106,8 @@ const logoutAdmin = async (req, res) => {
       return res.status(400).json({ error: 'No session found' });
     }
 
-   res.clearCookie('connect.sid', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
-    res.clearCookie('AdminmyCookie', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
+  res.clearCookie('connect.sid', { path: '/' });
+    res.clearCookie('AdminmyCookie')
 
     delete activeSessions[email];
      // Destroy session
