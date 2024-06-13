@@ -44,7 +44,7 @@ const corsOptions ={
 }
 app.use(cors(corsOptions));
 
-app.use(cookieParser('secret'));
+app.use(cookieParser());
 
 
 app.use(session({
@@ -52,16 +52,18 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { secure: process.env.NODE_ENV === 'production',
-        maxAge: new Date(Date.now() + 360000),
+        maxAge: 360000,
         httpOnly: true,
      },
      store: MongoStore.create({ mongoUrl: process.env.MONGO_URI,
         clear_interval: 3600,
+        ttl: 60 * 6, // 6 minutes in seconds
         autoRemoveInterval: 60,
         autoRemove: 'interval', // Cleanup interval in minutes
 
       }),
     }));
+
 
 // CORS options
 /*const corsOptions = {
