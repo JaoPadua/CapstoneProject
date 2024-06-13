@@ -109,7 +109,7 @@ const logoutAdmin = async (req, res) => {
    res.clearCookie('connect.sid', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
     res.clearCookie('AdminmyCookie', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
 
-    //delete activeSessions[email];
+    delete activeSessions[email];
      // Destroy session
      req.session.destroy(err => {
       if (err) {
