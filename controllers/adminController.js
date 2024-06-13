@@ -26,7 +26,7 @@ const generateSessionID = (length = 16) => {
     // If sessionID doesn't exist in the cookie, generate a new one
     if (!adminsessionID) {
       adminsessionID = generateSessionID();
-      res.cookie('AdminmyCookie', adminsessionID, { httpOnly: true });
+      res.cookie('AdminmyCookie', adminsessionID);
     }
   
     // Check if the user is already logged in from another session
@@ -77,7 +77,7 @@ const loginAdmin = async (req, res) => {
 
 
     // Set the cookie with the session ID
-    res.cookie('AdminmyCookie', { sessionID }, { httpOnly: true });
+    res.cookie('AdminmyCookie', { sessionID });
 
     const token = createToken(admin._id)
 
@@ -100,10 +100,6 @@ const logoutAdmin = async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: 'Email parameter is missing or undefined' });
     }
-
-
-
-
     console.log('Before logout:', activeSessions);
 
     if (!req.session) {
