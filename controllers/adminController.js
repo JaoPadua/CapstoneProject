@@ -109,17 +109,17 @@ const logoutAdmin = async (req, res) => {
     res.clearCookie('AdminmyCookie')
 
     delete activeSessions[email];
-    if(req.session){
-    req.session.destroy(err => {
+   // Destroy session
+    await req.session.destroy(err => {
       if (err) {
+        console.error('Failed to destroy session:', err);
         return res.status(500).json({ error: 'Failed to log out' });
       }
 
-      console.log('Session deleted successfully for email:', email);
-      console.log('After logout:', activeSessions);
+      console.log('Session destroyed for email:', email);
+      console.log('After logout:', req.session);
       res.status(200).json({ message: 'Logged out successfully' });
     });
-  }
   } catch (error) {
     console.error('Error during logout:', error);
     res.status(500).json({ error: 'Server error' });
