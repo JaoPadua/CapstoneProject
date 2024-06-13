@@ -111,18 +111,20 @@ const logoutAdmin = async (req, res) => {
 
     delete activeSessions[email];
      // Destroy session
-     req.session.destroy(err => {
+      if(req.session){
+    req.session.destroy(err => {
       if (err) {
-          return res.status(500).json({ error: 'Failed to log out' });
+        return res.status(500).json({ error: 'Failed to log out' });
       }
-      console.log('After logout:', activeSessions);
       console.log('Session deleted successfully for email:', email);
+      console.log('After logout:', activeSessions);
       res.status(200).json({ message: 'Logged out successfully' });
-  });
-} catch (error) {
-  console.error('Error during logout:', error);
-  res.status(500).json({ error: 'Server error' });
-}
+    });
+  }
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 };
 
 // signup a admin
