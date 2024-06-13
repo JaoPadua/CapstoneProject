@@ -54,6 +54,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+   unset: 'destroy' ,
     cookie: { secure: true,
         maxAge: 360000,
         httpOnly: true,
@@ -65,6 +66,7 @@ app.use(session({
         autoRemove: 'interval', // Cleanup interval in minutes
 
       }),
+  
     }));
 
 
