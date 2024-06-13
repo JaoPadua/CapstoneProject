@@ -100,10 +100,6 @@ const logoutAdmin = async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: 'Email parameter is missing or undefined' });
     }
-
-
-
-
     console.log('Before logout:', activeSessions);
 
     if (!req.session) {
@@ -112,28 +108,6 @@ const logoutAdmin = async (req, res) => {
 
    res.clearCookie('connect.sid', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
     res.clearCookie('AdminmyCookie', { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
-
-    //delete activeSessions[email];
-   //logout admin
-const logoutAdmin = async (req, res) => { 
-  const { email } = req.body;
-
-  try {
-    if (!email) {
-      return res.status(400).json({ error: 'Email parameter is missing or undefined' });
-    }
-
-
-
-
-    console.log('Before logout:', activeSessions);
-
-    if (!req.session) {
-      return res.status(400).json({ error: 'No session found' });
-    }
-
-    res.clearCookie('connect.sid', { path: '/' });
-    res.clearCookie('AdminmyCookie')
 
     //delete activeSessions[email];
      // Destroy session
