@@ -75,11 +75,10 @@ const loginAdmin = async (req, res) => {
     
     delete activeSessions[_id];
 
+    const token = createToken(admin._id)
 
     // Set the cookie with the session ID
     res.cookie('AdminmyCookie', { sessionID });
-
-    const token = createToken(admin._id)
 
     res.status(200).json({firstName,lastName,email,role ,token})
 
