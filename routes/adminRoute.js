@@ -34,7 +34,7 @@ router.get('/getSingleAdmin/:uid',getSingleAdmin)
 
 //delete Admin
 
-router.delete('/:uid', deleteAdmin)
+router.delete('/:uid', deleteAdmin,logDelete)
 
 router.post('/forgotAdminPass',forgotAdminPassword)
 
