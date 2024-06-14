@@ -56,7 +56,7 @@ app.use(session({
     saveUninitialized: false,
    unset: 'destroy' ,
     cookie: { secure: true,
-        maxAge: 360000,
+        maxAge: 60 * 60 * 1000, // 1 hour
         httpOnly: true,
      },
      store: MongoStore.create({ mongoUrl: process.env.MONGO_URI,
