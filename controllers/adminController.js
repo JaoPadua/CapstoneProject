@@ -65,7 +65,7 @@ const loginAdmin = async (req, res) => {
 
     // Check if the user is already logged in
     if (activeSessions[email]) {
-      return res.status(403).json({ error: 'User already logged in from another session',adminsessionID: activeSessions[email] });
+      return res.status(403).json({ error: 'User already logged in from another session',sessionID: activeSessions[email] });
     } else{
       delete activeSessions[email]
     }
