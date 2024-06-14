@@ -69,19 +69,20 @@ const loginAdmin = async (req, res) => {
     } else{
       delete activeSessions[email]
     }
-  
+
+
+   const token = createToken(admin._id)
+    
     req.session.Admin = { _id: admin._id, email, firstName, lastName,role};
     activeSessions[email] = req.sessionID;
     
     delete activeSessions[_id];
 
-    const token = createToken(admin._id)
-
     // Set the cookie with the session ID
-    res.cookie('AdminmyCookie', { sessionID });
+    res.cookie('AdminmyCookie', { sessionID }, { httpOnly: true });
 
+    
     res.status(200).json({firstName,lastName,email,role ,token})
-
     console.log('Admin session',req.session.Admin)
     console.log('admin sessionID:', sessionID);
 
