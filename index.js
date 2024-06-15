@@ -57,14 +57,14 @@ app.use(session({
     saveUninitialized: false,
     unset: 'destroy',
     cookie: {
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 1000, // 1 hour
         httpOnly: true,
     },
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI,
         ttl: 60 * 60, // 1 hour in seconds
-        autoRemove: 'interval', // Cleanup expired sessions
+        autoRemove: 'native', // Cleanup expired sessions
         autoRemoveInterval: 10, // Check every 10 minutes
     }),
 }));
