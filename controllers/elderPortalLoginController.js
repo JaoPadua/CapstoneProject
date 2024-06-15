@@ -124,46 +124,35 @@ const loginElder = async (req, res) => {
 
 
 // logout Elder
-const logoutElder = async (req, res) => { 
-const { email } = req.body;
+const logoutElder = async (req, res) => {
+  const { email } = req.body;
 
-try {
-if (!email) {
-  return res.status(400).json({ error: 'Email parameter is missing or undefined' });
-}
+  try {
+    if (!email) {
+      return res.status(400).json({ error: 'Email parameter is missing or undefined' });
+    }
 
-console.log('Before logout:', activeSessions);
+    console.log('Before logout:', activeSessions);
 
+    if (!req.session) {
+      return res.status(400).json({ error: 'No session found' });
+    }
 
+    res.clearCookie('connect.sid', { path: '/' });
+    res.clearCookie('myCookie'); // Optional, adjust logic if needed
 
-if (!req.session) {
-  return res.status(400).json({ error: 'No session found' });
-}
+    await req.session.destroy(); // Assuming destroy is Promise-based
 
-res.clearCookie('connect.sid', { path: '/' });
-res.clearCookie('myCookie')
-
-
-
-req.session.destroy(err => {
-  if (err) {
-    return res.status(500).json({ error: 'Failed to log out' });
-  } else {
-    console.log("logout successful");
-    req.session = null; // Destroying the session explicitly
+    delete activeSessions[email];  // Now executed after session is destroyed
+    console.log('Session deleted successfully for email:', email);
+    console.log('After logout:', activeSessions);
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).json({ error: 'Server error' });
   }
-  delete activeSessions[email];
-  console.log('Session deleted successfully for email:', email);
-  console.log('After logout:', activeSessions);
-  res.status(200).json({ message: 'Logged out successfully' });
-});
-
-
-} catch (error) {
-console.error('Error during logout:', error);
-res.status(500).json({ error: 'Server error' });
-}
 };
+
 
   
   
