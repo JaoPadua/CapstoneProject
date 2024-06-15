@@ -50,24 +50,24 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 
 
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-   unset: 'destroy' ,
-    cookie: { secure: true,
+    unset: 'destroy',
+    cookie: {
+        secure: true,
         maxAge: 60 * 60 * 1000, // 1 hour
         httpOnly: true,
-     },
-     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI,
-        clear_interval: 3600,
-        ttl: 60 * 6, // 6 minutes in seconds
-        autoRemoveInterval: 60,
-        autoRemove: 'interval', // Cleanup interval in minutes
-
-      }),
-  
-    }));
+    },
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI,
+        ttl: 60 * 60, // 1 hour in seconds
+        autoRemove: 'interval', // Cleanup expired sessions
+        autoRemoveInterval: 10, // Check every 10 minutes
+    }),
+}));
 
 
 // CORS options
