@@ -15,7 +15,7 @@ const router =express.Router()
 
 
 //login Route
-router.post('/login', loginAdmin,checkConcurrentSessionAdmin)
+router.post('/login', loginAdmin)
 
 
 //signup Route
