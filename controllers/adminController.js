@@ -53,37 +53,44 @@ const createToken= (_id)=>{
 
 // login a admin
 const loginAdmin = async (req, res) => {
-  const { email, password } = req.body;
+  const {email,password} = req.body
+  
+  try{
+    const admin = await Admin.login(email,password)
 
-  try {
-    const admin = await Admin.login(email, password);
+    //create a token
+    const{_id,role,firstName,lastName} = admin;
 
-    // Create a token
-    const { _id, role, firstName, lastName } = admin;
     const sessionID = generateSessionID();
 
-    // Check if user already logged in (based on user ID)
-    if (activeSessions[_id]) {
-      return res.status(403).json({ error: 'User already logged in from another session', sessionID: activeSessions[_id] });
+    // Check if the user is already logged in
+    if (activeSessions[email]) {
+      return res.status(403).json({ error: 'User already logged in from another session',sessionID: activeSessions[email] });
+    } else{
+      delete activeSessions[email]
     }
 
-    const token = createToken(admin._id);
 
-    req.session.Admin = { _id, email, firstName, lastName, role };
-    activeSessions[_id] = sessionID;
+   const token = createToken(admin._id)
+    
+    req.session.Admin = { _id: admin._id, email, firstName, lastName,role};
+    activeSessions[email] = req.sessionID;
+    
+    delete activeSessions[_id];
 
     // Set the cookie with the session ID
     res.cookie('AdminmyCookie', { sessionID }, { httpOnly: true });
 
-    res.status(200).json({ firstName, lastName, email, role, token });
-    console.log('Admin session', req.session.Admin);
+    
+    res.status(200).json({firstName,lastName,email,role ,token})
+    console.log('Admin session',req.session.Admin)
     console.log('admin sessionID:', sessionID);
-  } catch (error) {
-    // Only delete session if login fails
-    delete activeSessions[activeSessions[email]]; // Assuming you have a way to get sessionID from email
-    res.status(400).json({ error: error.message });
+
+  } catch (error){
+    res.status(400).json({error:error.message})
   }
-};
+}
+
 
 //logout admin
 //logout admin
