@@ -38,7 +38,8 @@ app.use("/uploads",express.static("uploads"))
 //Corrs to unblock Access-Control-Allow-Origin old corss
 const cors =require('cors')
 const corsOptions = {
-  origin: 'https://elderlysquire.netlify.app'
+  //origin: 'https://elderlysquire.netlify.app'
+  origin: '*'
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
